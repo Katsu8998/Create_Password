@@ -65,11 +65,14 @@ public class Main {
 		String inputDigit = new java.util.Scanner(System.in).nextLine();// 文字列化変更
 		String sha1 = "";
 		String Hash = try1(inputDigit, sha1);
+		System.out.println("パスワードが承認されました。登録いただいたパスワードからログインできます。他の方に決して教えないで下さい。");
+		System.out.println(inputDigit);
 
-		//ログイン
+		// ログイン
 		System.out.println("ログインしますか");
 		System.out.println("1:はい 2:いいえ");
 		int answer = new java.util.Scanner(System.in).nextInt();
+		String Sha1 = ("");
 
 		switch (1) {
 		case 1:
@@ -79,9 +82,10 @@ public class Main {
 					System.out.println("パスワードを入力して下さい");
 					String inputDigit2 = new java.util.Scanner(System.in).nextLine();
 
-					//ここでもう一度ハッシュ化させる
+					// ハッシュ化
+					String Hash2 = try2(inputDigit2, Sha1);
 
-					boolean logins = match(Hash, inputDigit2);
+					boolean logins = match(Hash, Hash2);
 					if (!(logins)) {
 						System.out.println("パスワードが正しくありません。");
 						login++;
@@ -115,10 +119,17 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("新たなパスワードが生成されました。こちらのパスワードからログインできます。他の方に決して教えないで下さい。");
-		System.out.println(sha1);
 		return sha1;
-
 	}
 
+	public static String try2(String inputDigit2, String Sha1) {
+		try {
+			MessageDigest Digest = MessageDigest.getInstance("SHA-1");
+			byte[] Result = Digest.digest(inputDigit2.getBytes());
+			Sha1 = String.format("%040x", new BigInteger(1, Result));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Sha1;
+	}
 }
