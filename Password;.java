@@ -1,10 +1,8 @@
 package Password;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.Scanner;
-import java.util.regex.Matcher;
 
 public class Main {
 
@@ -66,16 +64,7 @@ public class Main {
 		System.out.println("もう一度4桁の数字を入力してください");
 		String inputDigit = new java.util.Scanner(System.in).nextLine();// 文字列化変更
 		String sha1 = "";
-
-		try {
-			MessageDigest digest = MessageDigest.getInstance("SHA-1");
-			byte[] result = digest.digest(inputDigit.getBytes());
-			sha1 = String.format("%040x", new BigInteger(1, result));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("新たなパスワードが生成されました。こちらのパスワードからログインできます。他の方に決して教えないで下さい。");
-		System.out.println(sha1);
+		String Hash = try1(inputDigit, sha1);
 
 		//ログイン
 		System.out.println("ログインしますか");
@@ -89,7 +78,10 @@ public class Main {
 				while (login < 3) {
 					System.out.println("パスワードを入力して下さい");
 					String inputDigit2 = new java.util.Scanner(System.in).nextLine();
-					boolean logins = match(sha1, inputDigit2);
+
+					//ここでもう一度ハッシュ化させる
+
+					boolean logins = match(Hash, inputDigit2);
 					if (!(logins)) {
 						System.out.println("パスワードが正しくありません。");
 						login++;
@@ -106,10 +98,27 @@ public class Main {
 			break;
 		}
 	}
-	public static boolean match(String sha1, String inputDigit2) {
-		if (sha1.equals(inputDigit2)) {
+
+	public static boolean match(String Hash, String inputDigit2) {
+		if (Hash.equals(inputDigit2)) {
 			return true;
 		}
 		return false;
+
 	}
+
+	public static String try1(String inputDigit, String sha1) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-1");
+			byte[] result = digest.digest(inputDigit.getBytes());
+			sha1 = String.format("%040x", new BigInteger(1, result));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("新たなパスワードが生成されました。こちらのパスワードからログインできます。他の方に決して教えないで下さい。");
+		System.out.println(sha1);
+		return sha1;
+
+	}
+
 }
